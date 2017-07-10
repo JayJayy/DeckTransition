@@ -13,6 +13,7 @@ import UIKit
  whether the dismiss by pan gesture is enabled
 */
 protocol DeckPresentationControllerDelegate {
+	var cornerRadius: CGFloat { get }
     func isDismissGestureEnabled() -> Bool
 }
 
@@ -64,13 +65,18 @@ final class DeckPresentationController: UIPresentationController, UIGestureRecog
     override func presentationTransitionDidEnd(_ completed: Bool) {
         if completed {
             let scale: CGFloat = 1 - (40/presentingViewController.view.frame.height)
+			let cornerRadius: CGFloat = transitioningDelegate?.cornerRadius ?? 8.0
+			
             presentingViewController.view.transform = CGAffineTransform(scaleX: scale, y: scale)
             presentingViewController.view.alpha = 0.8
-            presentingViewController.view.layer.cornerRadius = 8
+            presentingViewController.view.layer.cornerRadius = cornerRadius
 			presentingViewController.view.layer.masksToBounds = true
             
             presentedViewController.view.frame = frameOfPresentedViewInContainerView
-            presentedViewController.view.round(corners: [.topLeft, .topRight], withRadius: 8)
+			
+			if cornerRadius > 0.0 {
+				presentedViewController.view.round(corners: [.topLeft, .topRight], withRadius: cornerRadius)
+			}
 			presentAnimation?()
             
             pan = UIPanGestureRecognizer(target: self, action: #selector(handlePan))

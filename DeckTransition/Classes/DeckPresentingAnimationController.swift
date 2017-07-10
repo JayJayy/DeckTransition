@@ -15,13 +15,15 @@ final class DeckPresentingAnimationController: NSObject, UIViewControllerAnimate
 	private let duration: TimeInterval?
 	private let animation: (() -> ())?
 	private let completion: ((Bool) -> ())?
+	private let cornerRadius: CGFloat
 	
 	// MARK:- Initializers
 	
-	init(duration: TimeInterval?, animation: (() -> ())?, completion: ((Bool) -> ())?) {
+	init(cornerRadius: CGFloat, duration: TimeInterval?, animation: (() -> ())?, completion: ((Bool) -> ())?) {
 		self.duration = duration
 		self.animation = animation
 		self.completion = completion
+		self.cornerRadius = cornerRadius
 	}
 	
 	// MARK:- UIViewControllerAnimatedTransitioning
@@ -43,13 +45,19 @@ final class DeckPresentingAnimationController: NSObject, UIViewControllerAnimate
             options: .curveEaseOut,
             animations: { [weak self] in
                 let scale: CGFloat = 1 - (40/presentingViewController.view.frame.height)
+				let cornerRadius = self?.cornerRadius ?? 8.0
+				
                 presentingViewController.view.transform = CGAffineTransform(scaleX: scale, y: scale)
                 presentingViewController.view.alpha = 0.8
-				presentingViewController.view.layer.cornerRadius = 8
+				presentingViewController.view.layer.cornerRadius = cornerRadius
 				presentingViewController.view.layer.masksToBounds = true
 				
                 presentedViewController.view.frame = transitionContext.finalFrame(for: presentedViewController)
-                presentedViewController.view.round(corners: [.topLeft, .topRight], withRadius: 8)
+				
+				if cornerRadius > 0.0 {
+					presentedViewController.view.round(corners: [.topLeft, .topRight], withRadius: cornerRadius)
+				}
+				
 				self?.animation?()
             }, completion: { [weak self] finished in
                 transitionContext.completeTransition(finished)

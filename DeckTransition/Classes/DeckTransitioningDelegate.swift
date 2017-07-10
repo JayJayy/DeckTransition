@@ -22,6 +22,8 @@ public final class DeckTransitioningDelegate: NSObject, UIViewControllerTransiti
 	*/
 	public var isDismissEnabled = true
 	
+	public var cornerRadius: CGFloat = 8.0
+	
 	// MARK:- Private variables
 	
 	private let presentDuration: TimeInterval?
@@ -59,6 +61,7 @@ public final class DeckTransitioningDelegate: NSObject, UIViewControllerTransiti
     
     public func animationController(forPresented presented: UIViewController, presenting: UIViewController, source: UIViewController) -> UIViewControllerAnimatedTransitioning? {
         return DeckPresentingAnimationController(
+			cornerRadius: cornerRadius,
 			duration: presentDuration,
 			animation: presentAnimation,
 			completion: presentCompletion)

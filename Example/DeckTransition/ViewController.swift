@@ -32,6 +32,9 @@ class ViewController: UIViewController {
     func viewWasTapped() {
         let modal = ModalViewController()
         let transitionDelegate = DeckTransitioningDelegate()
+		
+		transitionDelegate.cornerRadius = 0.0
+		
         modal.transitioningDelegate = transitionDelegate
         modal.modalPresentationStyle = .custom
         present(modal, animated: true, completion: nil)
